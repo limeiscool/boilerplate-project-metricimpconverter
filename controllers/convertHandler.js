@@ -1,14 +1,73 @@
 function ConvertHandler() {
   this.getNum = function (input) {
-    const number = input.replace(/[^\d./]/g, "");
+    // helpers
+    const filterDec = (a) => a.split(".");
+    const invalidD = (b) => filterDec(b).includes("");
+    const invalidN = (c) => c.split(".")[1] === "";
+    const decimalArr = (x) => x.split(".")[1].split("");
+    const notZero = (i) => i.map((z) => Number(z) > 0).includes(true);
+    //
+    const number = input.replace(/[a-z]+$/i, "") || "1";
 
-    if (/^[1-9]+[\/][1-9]+$/.test(number)) {
+    const validate = (num) => {
+      let on = num.replace(/[0-9]/g, "");
+      switch (on) {
+        case "./":
+        case "/.":
+        case "./.": {
+          let [n, d] = number.split("/");
+          if (invalidN(n) || invalidD(d)) {
+            return "invalid number";
+          } else {
+            // check decimal has a number greater than 0
+            let nDec = decimalArr(n);
+            let dDec = decimalArr(d);
+
+            if (notZero(nDec) && notZero(dDec)) {
+              let numerator = Number(n);
+              let denominator = Number(d);
+              return Number(numerator / denominator);
+            } else {
+              return "invalid number";
+            }
+          }
+        }
+        case "/": {
+          const [n, d] = number.split("/");
+          if (Number(n) === 0 || Number(d) === 0) {
+            return "invalid number";
+          }
+          return Number(n) / Number(d);
+        }
+        case ".": {
+          return num.split(".")[1] !== "" ? Number(num) : "invalid number";
+        }
+        case "": {
+          return Number(num) === 0 ? "invalid number" : Number(num);
+        }
+        default: {
+          return "invalid number";
+        }
+      }
+    };
+    return validate(number);
+  };
+
+  this.deleteLater = function (input) {
+    const number = input.replace(/[^\d./]/g, "") || "1";
+    const matchCount = (number.match(/\//g) || []).length;
+    if (matchCount === 1) {
       const [N, D] = number.split("/");
-      return parseFloat(N) / parseFloat(D);
-    } else if (/^[0-9]+(?:\.[0-9]+)?$/.test(number)) {
-      return parseFloat(number);
+      const runTest = (num) => /^[1-9]\d*(?:\.\d+)?$/.test(num);
+      if (runTest(N) && runTest(D)) {
+        return Number(N) / Number(D);
+      } else {
+        return "invalid number";
+      }
     } else {
-      return "invalid number";
+      return /^[0-9]+(?:\.[0-9]+)?$/.test(number)
+        ? Number(number)
+        : "invalid number";
     }
   };
 
@@ -76,7 +135,8 @@ function ConvertHandler() {
   };
 
   this.getString = function (initNum, initUnit, returnNum, returnUnit) {
-    let result = `${initNum} ${initUnit} converts to ${returnNum} ${returnUnit}`;
+    let rn = returnNum.toFixed(5);
+    let result = `${initNum} ${initUnit} converts to ${rn} ${returnUnit}`;
 
     return result;
   };
