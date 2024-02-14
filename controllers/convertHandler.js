@@ -20,15 +20,42 @@ function ConvertHandler() {
             return "invalid number";
           } else {
             // check decimal has a number greater than 0
-            let nDec = decimalArr(n);
-            let dDec = decimalArr(d);
+            switch (on) {
+              case "./": {
+                let nDec = decimalArr(n);
+                if (notZero(nDec)) {
+                  let num = Number(n);
+                  let deno = Number(d);
+                  return num / deno;
+                } else {
+                  return "invalid number";
+                }
+              }
+              case "/.": {
+                let dDec = decimalArr(d);
+                if (notZero(dDec)) {
+                  let num = Number(n);
+                  let deno = Number(d);
+                  return num / deno;
+                } else {
+                  return "invalid number";
+                }
+              }
+              case "./.": {
+                let nDec = decimalArr(n);
+                let dDec = decimalArr(d);
 
-            if (notZero(nDec) && notZero(dDec)) {
-              let numerator = Number(n);
-              let denominator = Number(d);
-              return Number(numerator / denominator);
-            } else {
-              return "invalid number";
+                if (notZero(nDec) && notZero(dDec)) {
+                  let num = Number(n);
+                  let deno = Number(d);
+                  return num / deno;
+                } else {
+                  return "invalid number";
+                }
+              }
+              default: {
+                return "invalid number";
+              }
             }
           }
         }
@@ -53,32 +80,23 @@ function ConvertHandler() {
     return validate(number);
   };
 
-  this.deleteLater = function (input) {
-    const number = input.replace(/[^\d./]/g, "") || "1";
-    const matchCount = (number.match(/\//g) || []).length;
-    if (matchCount === 1) {
-      const [N, D] = number.split("/");
-      const runTest = (num) => /^[1-9]\d*(?:\.\d+)?$/.test(num);
-      if (runTest(N) && runTest(D)) {
-        return Number(N) / Number(D);
-      } else {
-        return "invalid number";
-      }
-    } else {
-      return /^[0-9]+(?:\.[0-9]+)?$/.test(number)
-        ? Number(number)
-        : "invalid number";
-    }
-  };
-
   this.getUnit = function (input) {
+    // helper
+    const checkL = (arr) => {
+      if (arr[0] === "l" || arr[0] === "L") {
+        return true;
+      } else {
+        return false;
+      }
+    };
     let result = input.match(/[a-zA-Z]+$/);
+
     if (result === null) {
       return "invalid unit";
     }
     const match = ["gal", "l", "lbs", "kg", "mi", "km"];
-    if (match.indexOf(result[0].toLowerCase()) > -1) {
-      return result === "l" ? "L" : result[0].toLowerCase();
+    if (match.indexOf(result[0].toLowerCase()) != -1) {
+      return checkL(result) ? "L" : result[0].toLowerCase();
     } else {
       return "invalid unit";
     }
