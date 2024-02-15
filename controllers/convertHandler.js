@@ -118,7 +118,7 @@ function ConvertHandler() {
   this.spellOutUnit = function (unit) {
     const spellConversions = {
       gal: "gallons",
-      l: "liters",
+      L: "liters",
       lbs: "pounds",
       kg: "kilograms",
       mi: "miles",

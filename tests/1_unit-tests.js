@@ -103,4 +103,33 @@ suite("Unit Tests", () => {
       done();
     });
   });
+
+  suite("Function convertHandler.getReturnUnit(initUnit)", (done) => {
+    test("Valid Units", (done) => {
+      let input = ["gal", "L", "mi", "km", "lbs", "kg"];
+      let expected = ["L", "gal", "km", "mi", "kg", "lbs"];
+      input.forEach((el, i) => {
+        assert.equal(convertHandler.getReturnUnit(el), expected[i]);
+      });
+      done();
+    });
+  });
+
+  suite("Function convertHandler.spellOutUnit(unit)", (done) => {
+    test("Valid Units", (done) => {
+      let input = ["gal", "L", "mi", "km", "lbs", "kg"];
+      let expected = [
+        "gallons",
+        "liters",
+        "miles",
+        "kilometers",
+        "pounds",
+        "kilograms",
+      ];
+      input.forEach((el, i) => {
+        assert.equal(convertHandler.spellOutUnit(el), expected[i]);
+      });
+      done();
+    });
+  });
 });
